@@ -109,10 +109,10 @@ String userPasswd = null;
 				</tr>
 				<tr>
 					<td align="center">用户类型：</td>
-					<td align="center">学生<input name="UserType" type="radio"
-						class="noborder" value="学生" checked> &nbsp;&nbsp;教师 <input
+					<td align="center">学生<input name="UserType" id="UserType" type="radio"
+						class="noborder" value="学生" checked> &nbsp;&nbsp;教师 <input id="UserType"
 						name="UserType" type="radio" class="noborder" value="教师">
-						&nbsp;&nbsp;管理员 <input name="UserType" type="radio"
+						&nbsp;&nbsp;管理员 <input name="UserType" type="radio" id="UserType"
 						class="noborder" value="管理员">
 					</td>
 				</tr>

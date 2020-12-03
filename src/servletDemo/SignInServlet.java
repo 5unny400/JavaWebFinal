@@ -69,9 +69,13 @@ public class SignInServlet extends HttpServlet {
 		GetConnection getConnection = new GetConnection();
 		Connection conn = getConnection.getConnect();
 
-		String userName = request.getParameter("userName");
-		String userPasswd = request.getParameter("passwd");
-		sql = "select name from tb_useraccount where userName =? and passwd = ?";
+		String userName = request.getParameter("userName").trim();
+		String userPasswd = request.getParameter("passwd").trim();
+		//这里不能获取到用户类型
+		String userType = request.getParameter("userType");
+		System.out.println(userName+userPasswd+userType);
+
+		sql = "select name from tb_user where userName =? and passwd = ?";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, userName);
