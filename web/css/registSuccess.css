@@ -1,8 +1,0 @@
-@charset "UTF-8";
-
-.show {
-    background-color: green;
-    background-image:url(images/bk_image2.jpg);
-    background-repeat: repeat-x;
-    height: 600px;
-}

@@ -12,7 +12,7 @@
 	</center>
 
 	<%
-		response.setHeader("refresh", "3;url = FindServlet");
+		response.setHeader("refresh", "3;url = Manage.jsp");
 	%>
 </body>
 </html>

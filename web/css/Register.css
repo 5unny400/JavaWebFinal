@@ -1,0 +1,15 @@
+@charset "UTF-8";
+
+    .wrap {
+    margin-top:-20px;
+    background-size: cover;
+    background-repeat: no-repeat;
+      background-image:url(../images/bk_image2.jpg);
+      height: 620px;
+    }
+
+    #one {
+      text-align: center;
+      color: black;
+    }
+  

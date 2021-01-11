@@ -1,6 +1,7 @@
 package servletDemo;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -41,64 +42,60 @@ public class SignInServlet extends HttpServlet {
 	}
 
 	/**
+	 * @return
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		request.setCharacterEncoding("utf-8"); // 1
+		request.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("utf-8");
+		PrintWriter out = response.getWriter();
 
-		response.setCharacterEncoding("utf-8"); // 3
+		String userName = request.getParameter("userName").trim();
+		String userPasswd = request.getParameter("userPasswd").trim();
 
+		// 便于管理页面使用用户名信息
 		HttpSession s = request.getSession();
 		s.setMaxInactiveInterval(600);
-		s.setAttribute("userName", request.getParameter("userName"));
-		s.setAttribute("passwd", request.getParameter("passwd"));
+		s.setAttribute("userName", userName);
+		s.setAttribute("passwd", userPasswd);
 		
+
 		String chkd[] = request.getParameterValues("remember"); // 记住用户名复选框状态
 		if (chkd != null && chkd[0].equals("true")) {
-			s.setAttribute("labelj", "true");
+			s.setAttribute("label", "true");
 		} else {
-			s.setAttribute("labelj", "false");
+			s.setAttribute("label", "false");
 		}
 
 		// 先连接数据库
 		String sql = "";
 		ResultSet rs = null;
-		GetConnection getConnection = new GetConnection();
-		Connection conn = getConnection.getConnect();
 
-		String userName = request.getParameter("userName").trim();
-		String userPasswd = request.getParameter("passwd").trim();
-		//这里不能获取到用户类型
-		String userType = request.getParameter("userType");
-		System.out.println(userName+userPasswd+userType);
+		Connection conn = GetConnection.getConnection();
 
-		sql = "select name from tb_user where userName =? and passwd = ?";
+		sql = "select id from tb_user where userName =? and passwd = ?";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, userName);
 			ps.setString(2, userPasswd);
-			rs = getConnection.query(ps);
+			// ps.setString(3, userType);
+			rs = GetConnection.query(ps);
+			rs.next();
+			out.print(rs.getRow());
+			System.out.print(rs.getRow());
 
-			if (!rs.next()) { // 登录失败！
-
-				request.getRequestDispatcher("SignErr.jsp").forward(request, response);
-			} else { // 登陆成功！
-
-				request.getRequestDispatcher("SignInSuccess.jsp").forward(request, response);
-			}
+			out.close();
 			ps.close();
 			conn.close();
 			rs.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-
 			e.printStackTrace();
 		}
 
-		doGet(request, response);
+		// doGet(request, response);
 	}
-
 }

@@ -4,11 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import GetConnection.GetConnection;
-import exercise.Person;
 
 /**
  * Servlet implementation class UpdateServlet
@@ -51,51 +46,41 @@ public class UpdateServlet extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		request.setCharacterEncoding("utf-8");
-		response.setContentType("text/html;charset=utf-8"); // 2
-		response.setCharacterEncoding("utf-8"); // 3
+		response.setCharacterEncoding("utf-8");
 
-		GetConnection getConnection = new GetConnection();
-		Connection conn = getConnection.getConnect();
-
+		int rows = 0;
+		Connection conn = GetConnection.getConnection();
 		PrintWriter out = response.getWriter();
 
-		String userName = request.getParameter("userName");
-		String changedName = request.getParameter("changedName");
+		String sql = "update tb_user set userName=? ,name = ?,userPhone = ?,workPlace=?,userEmail=?,passwd=?,userType=? where id=?";
+		if (!(request.getParameter("passwd").toString().trim()).equals(request.getParameter("qpassword").toString().trim())) {
+			rows = -1;
+			response.getWriter().print(rows);
+		} else {
+			try {
+				PreparedStatement ps = conn.prepareStatement(sql);
+				ps.setString(1, request.getParameter("userName"));
+				ps.setString(2, request.getParameter("name"));
+				ps.setString(3, request.getParameter("phone"));
+				ps.setString(4, request.getParameter("workPlace"));
+				ps.setString(5, request.getParameter("email"));
+				ps.setString(6, request.getParameter("passwd"));
+				ps.setString(7, request.getParameter("userType"));
+				ps.setString(8, request.getParameter("id"));
 
-		/*
-		 * String name = request.getParameter("name"); String userPhone =
-		 * request.getParameter("phone"); String workPlace =
-		 * request.getParameter("workPlace"); String userEmail =
-		 * request.getParameter("email");
-		 * 
-		 * String passwd = request.getParameter("passwd"); String userType =
-		 * request.getParameter("userType");
-		 */
-		String sql = "update tb_useraccount set userName=? where userName=?";
-		try {
-			PreparedStatement ps = conn.prepareStatement(sql);
+				rows = ps.executeUpdate();
+				System.out.println(rows);
+				out.print(rows);
 
-			ps.setString(1, changedName);
-			ps.setString(2, userName);
-
-			int rs = ps.executeUpdate();
-			if (rs == 0) {
-				out.print("<script language='javascript'>alert('修改失败！');</script>");
-			} else {
-				out.print("<script language='javascript'>alert('修改成功！');</script>");
+				ps.close();
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				// out.print("异常4！");
+				e.printStackTrace();
 			}
-
-			ps.close();
-			conn.close();
-
-			response.sendRedirect("FindServlet");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			// out.print("异常4！");
-			e.printStackTrace();
 		}
-
-		doGet(request, response);
+		//doGet(request, response);
 	}
 
 }

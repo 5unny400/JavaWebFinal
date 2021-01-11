@@ -38,36 +38,6 @@ public class DeleteServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		request.setCharacterEncoding("utf-8"); //1
-		response.setContentType("text/html;charset=utf-8");  //2
-		response.setCharacterEncoding("utf-8");  //3 
-		
-		GetConnection getConnection = new GetConnection();
-		Connection conn = getConnection.getConnect();
-		PrintWriter out=response.getWriter();
-		
-		String userName = (String)request.getParameter("userName");
-		
-		String sql = "delete from tb_useraccount where userName=?";
-		try {
-			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(1, userName);
-			int rs = getConnection.delete(ps);
-			
-			if(rs <= 0) {
-				out.print("É¾³ýÊ§°Ü£¡");
-			}else {
-				out.print("<script language='javascript'>alert('É¾³ý³É¹¦£¡');</script>");
-			}
-			conn.close();
-			ps.close();
-			response.sendRedirect("FindServlet");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			//out.print("Òì³£4£¡");
-			e.printStackTrace();
-		}
-		
 		
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
@@ -77,9 +47,37 @@ public class DeleteServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		request.setCharacterEncoding("utf-8"); 
+		response.setCharacterEncoding("utf-8"); 
+		String id = (String)request.getParameter("id");
 		
-		
-		doGet(request, response);
+		Connection conn = GetConnection.getConnection();
+		PrintWriter out=response.getWriter();
+		int rows = 0;
+
+		String sql = "delete from tb_user where id=?";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, id);
+			rows = ps.executeUpdate();
+			System.out.println(rows);
+			out.print(rows);
+			/*
+			if(rs <= 0) {
+				out.print("É¾³ýÊ§°Ü£¡");
+			}else {
+				out.print("<script language='javascript'>alert('É¾³ý³É¹¦£¡');</script>");
+			}*/
+			conn.close();
+			ps.close();
+			GetConnection.close();
+			//response.sendRedirect("FindServlet");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			//out.print("Òì³£4£¡");
+			e.printStackTrace();
+		}
+		//doGet(request, response);
 	}
 
 }

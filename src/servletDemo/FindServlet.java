@@ -18,8 +18,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+
+
 import GetConnection.GetConnection;
 import exercise.Person;
+import net.sf.json.JSONArray;
 
 
 
@@ -44,47 +47,8 @@ public class FindServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		request.setCharacterEncoding("utf-8"); 
-
-		response.setCharacterEncoding("utf-8");
 		
-		String sql = "";
-		ResultSet rs = null;
-		GetConnection getConnection = new GetConnection();
-		Connection conn = getConnection.getConnect();
-		
-		sql = "select *  from tb_useraccount ";
-			try {
-				PreparedStatement ps = conn.prepareStatement(sql);
-				
-				rs = getConnection.query(ps);
-				
-				List<Person> listAll = new ArrayList<Person>();
-				while(rs.next()) {
-					Person person = new Person();
-					person.setEmail(rs.getString("userEmail"));
-					person.setName(rs.getString("name"));
-					person.setPasswd(rs.getString("passwd"));
-					person.setPhone(rs.getString("userPhone"));
-					person.setUserName(rs.getString("userName"));
-					person.setWorkPlace(rs.getString("workPlace"));
-					person.setUserType(rs.getString("userType"));
-					
-					listAll.add(person);
-				}
-				request.setAttribute("listAll", listAll);
-				rs.close();
-				ps.close();
-				conn.close();
-				request.getRequestDispatcher("Manage.jsp").forward(request, response);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				//out.print("“Ï≥£4£°");
-				e.printStackTrace();
-			}
-		
-		
-		response.getWriter().append("Served at findServlet: ").append(request.getContextPath());
+		doPost(request, response);
 	}
 
 	/**
@@ -92,8 +56,50 @@ public class FindServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-
-		doGet(request, response);
+		request.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("utf-8");
+		List<Person> listAll = new ArrayList<Person>();
+		try {
+			String searchtext = request.getParameter("search");
+			String id = request.getParameter("id");
+			String sql = "select * from tb_user";
+			if(searchtext!=null&&!searchtext.equals(""))
+			{
+				sql =sql + " where userName like '%"+searchtext+"%' or name like '%"+searchtext+"%'";
+			}
+			if(id!=null&&!id.equals(""))
+			{
+				sql =sql + " where id="+id;
+			}
+			
+			ResultSet rs = GetConnection.query(sql);
+			
+			while (rs.next()) {
+				Person userinfo = new Person();
+				
+				userinfo.setId(rs.getString("id"));
+				userinfo.setUserName(rs.getString("userName"));
+				userinfo.setPasswd(rs.getString("passwd"));
+				userinfo.setUserType(rs.getString("userType"));
+				userinfo.setName(rs.getString("name"));
+				userinfo.setEmail(rs.getString("userEmail"));
+				userinfo.setWorkPlace(rs.getString("workPlace"));
+				userinfo.setPhone(rs.getString("userPhone"));
+				listAll.add(userinfo);
+			}
+			
+			//request.setAttribute("list", list);
+			rs.close();  
+			GetConnection.close();  
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		JSONArray jsonArray = JSONArray.fromObject(listAll);
+		System.out.println(jsonArray);
+		response.getWriter().print(jsonArray);
+		
+		//doGet(request, response);
 	}
 
 }

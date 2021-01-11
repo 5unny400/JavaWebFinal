@@ -1,0 +1,9 @@
+@charset "UTF-8";
+.wrap {
+	margin-top:-20px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-image: url(../images/bk_image.jpg);
+   height:620px;
+    width:100%;
+}

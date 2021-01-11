@@ -7,7 +7,12 @@ import java.io.Serializable;
  *
  */
 public class Person implements Serializable{
-
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
+	//id
+	private int id;
 	// ÐÕÃû
 	private String name;
 	// µç»°ºÅÂë
@@ -77,5 +82,14 @@ public class Person implements Serializable{
 
 	public void setUserType(String userType) {
 		this.userType = userType;
+	}
+
+	public void setId(String string) {
+		// TODO Auto-generated method stub
+		this.id =Integer.parseInt( string);
+	}
+
+	public int getId() {
+		return this.id;
 	}
 }
